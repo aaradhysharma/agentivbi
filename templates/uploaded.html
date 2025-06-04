@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-success">
+                <i class="fas fa-check-circle me-2"></i>Files Uploaded Successfully!
+            </h2>
+            <p class="lead text-muted">Your data is ready for processing</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>{{ df1_info.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Rows:</strong> {{ df1_info.shape[0] }}
+                    </div>
+                    <div class="col-6">
+                        <strong>Columns:</strong> {{ df1_info.shape[1] }}
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <strong>Available Columns:</strong>
+                    <div class="mt-2">
+                        {% for column in df1_info.columns %}
+                            <span class="badge bg-secondary me-1 mb-1">{{ column }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>{{ df2_info.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Rows:</strong> {{ df2_info.shape[0] }}
+                    </div>
+                    <div class="col-6">
+                        <strong>Columns:</strong> {{ df2_info.shape[1] }}
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <strong>Available Columns:</strong>
+                    <div class="mt-2">
+                        {% for column in df2_info.columns %}
+                            <span class="badge bg-secondary me-1 mb-1">{{ column }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-magic me-2 text-warning"></i>What would you like to do next?
+                </h5>
+                <p class="card-text text-muted">Use natural language to join your tables or create visualizations.</p>
+                
+                <form action="/command" method="post">
+                    <div class="mb-3">
+                        <label for="command" class="form-label fw-semibold">Enter Command</label>
+                        <textarea class="form-control" id="command" name="command" rows="3" 
+                                placeholder="Try commands like:
+• Join tables on [column_name] with inner join
+• Create bar chart of [column] by [column]
+• Show line chart of [column] over [column]"
+                                required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-play me-2"></i>Execute Command
+                    </button>
+                </form>
+                
+                <div class="mt-4">
+                    <h6 class="fw-semibold">Quick Commands:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Join Commands:</h6>
+                            {% set common_columns = df1_info.columns | intersect(df2_info.columns) %}
+                            {% if common_columns %}
+                                {% for column in common_columns[:3] %}
+                                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="setCommand('Join tables on {{ column }} with inner join')">
+                                        Join on {{ column }}
+                                    </button>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted small">No common columns found for automatic join suggestions.</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Chart Commands:</h6>
+                            {% for column in df1_info.columns[:3] %}
+                                <button class="btn btn-outline-success btn-sm mb-2 w-100" onclick="setCommand('Create bar chart of {{ column }} by count')">
+                                    Chart {{ column }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h6 class="alert-heading">
+                <i class="fas fa-lightbulb me-2"></i>Tips for better results:
+            </h6>
+            <ul class="mb-0">
+                <li>Use the exact column names shown above in your commands</li>
+                <li>For joins, specify the join type: inner, left, right, or outer</li>
+                <li>For charts, you can aggregate data using sum, mean, count, max, or min</li>
+                <li>Try different chart types: bar, line, scatter, pie, or histogram</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setCommand(command) {
+    document.getElementById('command').value = command;
+}
+</script>
+{% endblock %} 

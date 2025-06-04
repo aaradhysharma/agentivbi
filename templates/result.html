@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">
+                <i class="fas fa-chart-line me-2"></i>Visualization Created!
+            </h2>
+            <p class="lead text-muted">Your chart has been generated successfully</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Chart Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Chart Type:</strong>
+                        <span class="badge bg-primary ms-2">{{ chart_info.type|title }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>X-Axis:</strong>
+                        <span class="badge bg-secondary ms-2">{{ chart_info.x }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Y-Axis:</strong>
+                        <span class="badge bg-secondary ms-2">{{ chart_info.y if chart_info.y else 'N/A' }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Data Points:</strong>
+                        <span class="badge bg-info ms-2">{{ chart_info.data_shape[0] }} rows</span>
+                    </div>
+                </div>
+                {% if chart_info.aggregation %}
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Aggregation:</strong>
+                        <span class="badge bg-warning ms-2">{{ chart_info.aggregation|title }}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Data Source:</strong>
+                        <span class="badge bg-success ms-2">{{ chart_info.data_source }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="chart-container" style="padding: 20px;">
+                    {{ chart | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-magic me-2 text-warning"></i>Create Another Visualization
+                </h5>
+                <p class="card-text text-muted">Want to explore your data further? Create another chart or try a different visualization.</p>
+                
+                <form action="/command" method="post">
+                    <div class="mb-3">
+                        <label for="command" class="form-label fw-semibold">New Command</label>
+                        <textarea class="form-control" id="command" name="command" rows="3" 
+                                placeholder="Try different visualizations:
+• Create line chart of [column] over [column]
+• Show pie chart of count by [column]
+• Make scatter plot of [column] vs [column]
+• Generate histogram of [column]"
+                                required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-chart-bar me-2"></i>Create New Chart
+                    </button>
+                </form>
+                
+                <div class="mt-4">
+                    <h6 class="fw-semibold">Quick Chart Options:</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Different Chart Types:</h6>
+                            {% if chart_info.type != 'bar' %}
+                            <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="setCommand('Create bar chart of {{ chart_info.y if chart_info.y else chart_info.x }} by {{ chart_info.x }}')">
+                                <i class="fas fa-chart-bar me-1"></i>Bar Chart
+                            </button>
+                            {% endif %}
+                            {% if chart_info.type != 'line' and chart_info.y %}
+                            <button class="btn btn-outline-success btn-sm mb-2 w-100" onclick="setCommand('Create line chart of {{ chart_info.y }} over {{ chart_info.x }}')">
+                                <i class="fas fa-chart-line me-1"></i>Line Chart
+                            </button>
+                            {% endif %}
+                            {% if chart_info.type != 'pie' %}
+                            <button class="btn btn-outline-warning btn-sm mb-2 w-100" onclick="setCommand('Create pie chart of count by {{ chart_info.x }}')">
+                                <i class="fas fa-chart-pie me-1"></i>Pie Chart
+                            </button>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Different Aggregations:</h6>
+                            {% if chart_info.aggregation != 'sum' and chart_info.y %}
+                            <button class="btn btn-outline-info btn-sm mb-2 w-100" onclick="setCommand('Create {{ chart_info.type }} chart of sum of {{ chart_info.y }} by {{ chart_info.x }}')">
+                                <i class="fas fa-plus me-1"></i>Sum
+                            </button>
+                            {% endif %}
+                            {% if chart_info.aggregation != 'mean' and chart_info.y %}
+                            <button class="btn btn-outline-info btn-sm mb-2 w-100" onclick="setCommand('Create {{ chart_info.type }} chart of mean of {{ chart_info.y }} by {{ chart_info.x }}')">
+                                <i class="fas fa-calculator me-1"></i>Average
+                            </button>
+                            {% endif %}
+                            {% if chart_info.aggregation != 'count' %}
+                            <button class="btn btn-outline-info btn-sm mb-2 w-100" onclick="setCommand('Create {{ chart_info.type }} chart of count by {{ chart_info.x }}')">
+                                <i class="fas fa-hashtag me-1"></i>Count
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="text-center">
+            <a href="/" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-home me-2"></i>Upload New Files
+            </a>
+            <a href="/reset" class="btn btn-outline-danger">
+                <i class="fas fa-trash me-2"></i>Reset Session
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h6 class="alert-heading">
+                <i class="fas fa-download me-2"></i>Export Options:
+            </h6>
+            <p class="mb-0">
+                You can right-click on the chart above to save it as an image (PNG) or interact with it using the Plotly controls in the top-right corner of the chart.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setCommand(command) {
+    document.getElementById('command').value = command;
+}
+
+// Auto-resize chart on window resize
+window.addEventListener('resize', function() {
+    if (window.Plotly) {
+        var chartContainer = document.querySelector('.chart-container .plotly-graph-div');
+        if (chartContainer) {
+            Plotly.Plots.resize(chartContainer);
+        }
+    }
+});
+</script>
+{% endblock %} 

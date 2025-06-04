@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-dark mb-3">
+                <i class="fas fa-robot me-3"></i>agentivBI
+            </h1>
+            <p class="lead text-muted">Automate your business intelligence with natural language commands</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="feature-icon">
+                <i class="fas fa-upload fa-lg"></i>
+            </div>
+            <h5 class="fw-bold">Upload Tables</h5>
+            <p class="text-muted">Upload CSV or Excel files to get started</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="feature-icon">
+                <i class="fas fa-link fa-lg"></i>
+            </div>
+            <h5 class="fw-bold">Natural Language Joins</h5>
+            <p class="text-muted">Describe how to join your tables in plain English</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="feature-icon">
+                <i class="fas fa-chart-bar fa-lg"></i>
+            </div>
+            <h5 class="fw-bold">Auto Visualizations</h5>
+            <p class="text-muted">Generate charts with simple commands</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-upload me-2 text-primary"></i>Step 1: Upload Your Data
+                </h5>
+                <p class="card-text text-muted">Upload two tables (CSV or Excel format) that you want to join and analyze.</p>
+                
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file1" class="form-label fw-semibold">First Table</label>
+                        <input type="file" class="form-control" id="file1" name="file1" accept=".csv,.xlsx,.xls" required>
+                        <div class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file2" class="form-label fw-semibold">Second Table</label>
+                        <input type="file" class="form-control" id="file2" name="file2" accept=".csv,.xlsx,.xls" required>
+                        <div class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-upload me-2"></i>Upload Tables
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-comments me-2 text-success"></i>Step 2: Natural Language Commands
+                </h5>
+                <p class="card-text text-muted">After uploading, use natural language to join tables and create visualizations.</p>
+                
+                <form action="/command" method="post">
+                    <div class="mb-3">
+                        <label for="command" class="form-label fw-semibold">Enter Command</label>
+                        <textarea class="form-control" id="command" name="command" rows="3" 
+                                placeholder="Examples:
+• Join tables on CustomerID with inner join
+• Create bar chart of Sales by Region
+• Show line chart of Revenue over Month"
+                                required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-magic me-2"></i>Execute Command
+                    </button>
+                </form>
+                
+                <div class="mt-3">
+                    <h6 class="fw-semibold text-muted">Example Commands:</h6>
+                    <div class="examples">
+                        <button class="btn btn-outline-secondary btn-sm me-2 mb-2" onclick="setCommand('Join tables on ID with left join')">
+                            Join Example
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm me-2 mb-2" onclick="setCommand('Create bar chart of sales by region')">
+                            Bar Chart
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm me-2 mb-2" onclick="setCommand('Show pie chart of count by category')">
+                            Pie Chart
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm me-2 mb-2" onclick="setCommand('Create line chart of revenue over month')">
+                            Line Chart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-info-circle me-2 text-info"></i>How It Works
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold">Supported Join Types:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Inner Join</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Left Join</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Right Join</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Outer Join</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold">Supported Chart Types:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-chart-bar text-primary me-2"></i>Bar Charts</li>
+                            <li><i class="fas fa-chart-line text-primary me-2"></i>Line Charts</li>
+                            <li><i class="fas fa-chart-pie text-primary me-2"></i>Pie Charts</li>
+                            <li><i class="fas fa-chart-area text-primary me-2"></i>Scatter Plots</li>
+                            <li><i class="fas fa-chart-simple text-primary me-2"></i>Histograms</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setCommand(command) {
+    document.getElementById('command').value = command;
+}
+</script>
+{% endblock %} 

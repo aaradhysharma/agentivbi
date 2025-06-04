@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-success">
+                <i class="fas fa-link me-2"></i>Tables Joined Successfully!
+            </h2>
+            <p class="lead text-muted">Your data has been combined and is ready for visualization</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Join Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Join Type:</strong>
+                        <span class="badge bg-primary ms-2">{{ join_info.type|title }} Join</span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Join Key:</strong>
+                        <span class="badge bg-secondary ms-2">{{ join_info.key }}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Result Size:</strong>
+                        <span class="badge bg-info ms-2">{{ join_info.shape[0] }} rows × {{ join_info.shape[1] }} columns</span>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <strong>Available Columns in Joined Data:</strong>
+                    <div class="mt-2">
+                        {% for column in join_info.columns %}
+                            <span class="badge bg-secondary me-1 mb-1">{{ column }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>Sample Data Preview (First 10 rows)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                {% for column in join_info.columns %}
+                                    <th>{{ column }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in sample_data %}
+                                <tr>
+                                    {% for column in join_info.columns %}
+                                        <td>{{ row[column] if row[column] is not none else '' }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-bar me-2 text-primary"></i>Create Visualization
+                </h5>
+                <p class="card-text text-muted">Now create charts and visualizations using your joined data.</p>
+                
+                <form action="/command" method="post">
+                    <div class="mb-3">
+                        <label for="command" class="form-label fw-semibold">Visualization Command</label>
+                        <textarea class="form-control" id="command" name="command" rows="3" 
+                                placeholder="Examples:
+• Create bar chart of [column] by [column]
+• Show line chart of [column] over [column]
+• Make pie chart of count by [column]
+• Generate scatter plot of [column] vs [column]"
+                                required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-chart-line me-2"></i>Create Visualization
+                    </button>
+                </form>
+                
+                <div class="mt-4">
+                    <h6 class="fw-semibold">Quick Chart Suggestions:</h6>
+                    <div class="row">
+                        {% set numeric_columns = [] %}
+                        {% set text_columns = [] %}
+                        {% for column in join_info.columns[:6] %}
+                            {% if 'id' in column.lower() or 'count' in column.lower() or 'amount' in column.lower() or 'price' in column.lower() or 'sales' in column.lower() or 'revenue' in column.lower() %}
+                                {% set _ = numeric_columns.append(column) %}
+                            {% else %}
+                                {% set _ = text_columns.append(column) %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Bar Charts:</h6>
+                            {% if numeric_columns and text_columns %}
+                                {% for i in range([numeric_columns|length, text_columns|length, 3]|min) %}
+                                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="setCommand('Create bar chart of {{ numeric_columns[i] }} by {{ text_columns[i] }}')">
+                                        {{ numeric_columns[i] }} by {{ text_columns[i] }}
+                                    </button>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Other Charts:</h6>
+                            {% if text_columns %}
+                                <button class="btn btn-outline-success btn-sm mb-2 w-100" onclick="setCommand('Create pie chart of count by {{ text_columns[0] }}')">
+                                    Count by {{ text_columns[0] }}
+                                </button>
+                            {% endif %}
+                            {% if numeric_columns|length >= 2 %}
+                                <button class="btn btn-outline-warning btn-sm mb-2 w-100" onclick="setCommand('Create scatter plot of {{ numeric_columns[0] }} vs {{ numeric_columns[1] }}')">
+                                    {{ numeric_columns[0] }} vs {{ numeric_columns[1] }}
+                                </button>
+                            {% endif %}
+                            {% if numeric_columns %}
+                                <button class="btn btn-outline-info btn-sm mb-2 w-100" onclick="setCommand('Create histogram of {{ numeric_columns[0] }}')">
+                                    Distribution of {{ numeric_columns[0] }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="text-center">
+            <a href="/" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-home me-2"></i>Upload New Files
+            </a>
+            <a href="/reset" class="btn btn-outline-danger">
+                <i class="fas fa-trash me-2"></i>Reset Session
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setCommand(command) {
+    document.getElementById('command').value = command;
+}
+</script>
+{% endblock %} 

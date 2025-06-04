@@ -1,0 +1,16 @@
+order_id,customer_id,product,quantity,price,order_date,status
+2001,1001,Laptop,1,999.99,2023-01-20,Completed
+2002,1002,Mouse,2,25.50,2023-02-25,Completed
+2003,1003,Keyboard,1,79.99,2023-02-05,Completed
+2004,1001,Monitor,2,299.99,2023-03-01,Shipped
+2005,1004,Headphones,1,149.99,2023-03-12,Processing
+2006,1005,Tablet,1,599.99,2023-02-10,Completed
+2007,1002,Cable,3,12.99,2023-03-05,Completed
+2008,1006,Speaker,1,199.99,2023-03-28,Shipped
+2009,1003,Mouse,1,25.50,2023-02-15,Completed
+2010,1007,Laptop,1,1299.99,2023-01-12,Completed
+2011,1008,Keyboard,2,79.99,2023-03-02,Processing
+2012,1009,Monitor,1,299.99,2023-03-18,Shipped
+2013,1001,Headphones,1,149.99,2023-01-25,Completed
+2014,1010,Tablet,1,599.99,2023-01-28,Completed
+2015,1005,Speaker,2,199.99,2023-02-12,Completed 

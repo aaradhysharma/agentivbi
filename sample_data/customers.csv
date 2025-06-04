@@ -1,0 +1,11 @@
+customer_id,name,region,signup_date,age,customer_type
+1001,John Smith,North,2023-01-15,34,Premium
+1002,Sarah Johnson,South,2023-02-20,28,Standard
+1003,Mike Chen,East,2023-01-30,42,Premium
+1004,Lisa Garcia,West,2023-03-10,31,Standard
+1005,David Brown,North,2023-02-05,29,Premium
+1006,Emily Davis,South,2023-03-25,37,Standard
+1007,James Wilson,East,2023-01-08,45,Premium
+1008,Maria Rodriguez,West,2023-02-28,33,Standard
+1009,Robert Taylor,North,2023-03-15,39,Premium
+1010,Jennifer Lee,South,2023-01-22,26,Standard 
